@@ -37,11 +37,13 @@ void em_format_time(double sec, char *output)
 //为 Lyric 结构体分配空间并解析 .lrc 歌词文本
 static EM_ERR lyric_init(Lyric *lyric, const char *str)
 {
+	if (str == NULL) //参数检查勿漏
+		return EM_ERR_PARAM_INVAILD;
 	//首先估计歌词的行数，以分配空间
 	//通过换行的数量来估计歌词行数
 	const char *ptr = str; //输入字符串的指针
 	int count = 0; // \n 即换行符的数量
-	while (ptr != NULL && ptr <= str && ptr - str < (int)strlen(str))
+	while (ptr != NULL && ptr >= str && ptr - str < (int)strlen(str))
 	{
 		ptr = strchr(ptr, '\n');
 		count++;
@@ -83,13 +85,16 @@ static EM_ERR lyric_init(Lyric *lyric, const char *str)
 		double ss = 0;
 		sscanf(line, "[%d:%lf]", &mm, &ss);
 		lyric->time_array[lyric_line_index] = mm * 60 + ss; //储存该行时间
+
 		//提取出歌词
 		char *text_line = line + index + 1;
-		lyric->lyric_array[lyric_line_index] = malloc(strlen(text_line) + 1);
+		lyric->lyric_array[lyric_line_index] = malloc(strlen(text_line) + 2);
 		if (lyric->lyric_array[lyric_line_index] == NULL)
 			return EM_ERR_ALLOC_FAILED;
 		strcpy(lyric->lyric_array[lyric_line_index], text_line);
 		lyric_line_index++;
+		if (lyric_line_index > lyric->length)
+			system("pause");
 	next:
 		line = strtok(NULL, "\n"); //按行分割字符串
 		

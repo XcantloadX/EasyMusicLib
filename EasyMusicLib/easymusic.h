@@ -37,6 +37,7 @@ typedef int EM_ERR; //错误代码
 #define EM_ERR_UNSPPORTED_FORMAT -1 //文件格式不支持
 #define EM_ERR_FAILED_TO_LOAD -2 //载入文件失败
 #define EM_ERR_ALLOC_FAILED -3
+#define EM_ERR_PARAM_INVAILD -4 //参数无效
 #define EM_ERR_RAW -100
 #define EM_ERR_UNKNOWN -110
 
@@ -67,6 +68,7 @@ Lyric *lyric_create_from_string(const char *str);
 EM_ERR lyric_update(Lyric *lyric, double position, char **current_line);
 
 
+
 //创建一个播放器
 //	返回值：创建的播放器实例。如果失败，则返回 NULL。
 MusicPlayer *player_create();
@@ -83,8 +85,39 @@ EM_ERR player_open(MusicPlayer *player, const char *file_path);
 //	返回值：
 //		错误码，即 EM_ERR_ 开头的常量。
 EM_ERR player_play(MusicPlayer *player);
+//获取播放器的总长度（秒）。
+//	参数：
+//		player - MusicPlayer 结构体的指针
+//		seconds - 返回值，播放器的总长度（秒）。传入一个 double 类型的指针。
+//	返回值：
+//		错误码，即 EM_ERR_ 开头的常量。
 EM_ERR player_length_get(MusicPlayer *player, double *seconds);
+
+//获取当前播放位置（秒）。
+//	参数：
+// player - MusicPlayer 结构体的指针
+//		seconds - 返回值，当前播放位置（秒）。传入一个 double 类型的指针。
+//	返回值：
+//		错误码，即 EM_ERR_ 开头的常量。
 EM_ERR player_position_get(MusicPlayer *player, double *seconds);
+
+//获取播放器的总长度（秒）。
+//	参数：
+//		player - MusicPlayer 结构体的指针
+//	返回值：
+//		播放器的总长度（秒）。
 inline double player_length_get_(MusicPlayer *player);
+
+//获取当前播放位置（秒）。
+//	参数：
+//		player - MusicPlayer 结构体的指针
+//	返回值：
+//		当前播放位置（秒）。
 inline double player_position_get_(MusicPlayer *player);
+
+//获取播放器的播放状态。
+//	参数：
+//		player - MusicPlayer 结构体的指针
+//	返回值：
+//		当前播放器是否正在播放。
 inline bool player_status_playing_(MusicPlayer *player);
