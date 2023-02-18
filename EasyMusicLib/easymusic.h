@@ -106,7 +106,7 @@ EM_ERR player_position_get(MusicPlayer *player, double *seconds);
 //		player - MusicPlayer 结构体的指针
 //	返回值：
 //		播放器的总长度（秒）。
-inline double player_length_get_(MusicPlayer *player);
+ double player_length_get_(MusicPlayer *player);
 
 //获取当前播放位置（秒）。
 //	参数：

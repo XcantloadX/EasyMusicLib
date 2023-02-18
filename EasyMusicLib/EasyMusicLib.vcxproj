@@ -157,6 +157,7 @@
     <ClCompile Include="easymusic.c" />
     <ClCompile Include="examples.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="MusicPlayer\player.c" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
