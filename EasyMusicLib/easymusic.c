@@ -10,10 +10,6 @@ MCIERROR em_get_last_error()
 }
 
 //获取指定 MCI 错误码对应的错误描述。
-//参数：
-//	error_code -> 错误码
-//返回值：
-//	获取到的错误描述的字符串
 char* em_get_error(MCIERROR error_code) 
 {
 	char* str = malloc(sizeof(char) * 1024);
@@ -22,9 +18,6 @@ char* em_get_error(MCIERROR error_code)
 }
 
 //按“分分:秒秒”的格式输出时间
-//参数：
-//	sec - 输入的秒数
-//	output - 输出的结果，传入字符型数组指针即可。需保证数组长度大于格式化输出后字符串的长度，否则可能会造成未知影响。
 void em_format_time(double sec, char *output)
 {
 	int mm = (int)(sec / 60);
@@ -57,6 +50,7 @@ static EM_ERR lyric_init(Lyric *lyric, const char *str)
 
 	//.lrc 歌词每一行的格式都如下：[03:01.99]xxxx
 	//开头的时间可能出现多次：[00:01.80][00:04.92][01:18.27][01:20.97][03:15.35][03:18.30]xxxx
+	//TODO 支持多个时间
 
 	//由于 strtok 会改变原字符串，所以需要先复制备份一份
 	char *str_new = malloc(strlen(str) + 1);
@@ -78,7 +72,6 @@ static EM_ERR lyric_init(Lyric *lyric, const char *str)
 			if (index > strlen(line))
 				goto next;
 		}
-
 		
 		//提取出时间并转换为秒
 		int mm = 0;
@@ -104,6 +97,7 @@ static EM_ERR lyric_init(Lyric *lyric, const char *str)
 	return EM_ERR_OK;
 }
 
+//从字符串中创建 Lyric 结构体
 Lyric *lyric_create_from_string(const char *str)
 {
 	Lyric *lyric = malloc(sizeof(Lyric));
@@ -114,7 +108,18 @@ Lyric *lyric_create_from_string(const char *str)
 	return lyric;
 }
 
-EM_ERR lyric_update(Lyric *lyric, double position, char **current_line)
+//获取指定行的歌词
+EM_ERR lyric_get(Lyric *lyric, int index, char **current_line)
+{
+	if (index < 0 || index > lyric->length)
+		return EM_ERR_PARAM_INVAILD;
+
+	*current_line = lyric->lyric_array[index];
+	return EM_ERR_OK;
+}
+
+//更新歌词，获取当前歌词的下标
+EM_ERR lyric_update_index(Lyric *lyric, double position, int *current_line_index)
 {
 	//思路：遍历所有歌词，找到离当前时间点最近且不超过当前时间的歌词行
 	double min_delta_time = 999999.0;
@@ -124,11 +129,23 @@ EM_ERR lyric_update(Lyric *lyric, double position, char **current_line)
 		if (result > 0 && result < min_delta_time)
 		{
 			min_delta_time = result;
-			*current_line = lyric->lyric_array[i]; //把时间差最小的歌词行字符串指针保存下来
+			*current_line_index =i; //把时间差最小的歌词行的下标保存下来
 		}
 	}
-	
+
 	return min_delta_time != 999999.0; //如果 min_delta_time 还是 999999.0 说没找到
+}
+
+//更新歌词，获取当前歌词文本
+EM_ERR lyric_update(Lyric *lyric, double position, char **current_line)
+{
+	int index = 0;
+	EM_ERR err = 0;
+	err = lyric_update_index(lyric, position, &index);
+	if (err != EM_ERR_OK)
+		return err;
+
+	return lyric_get(lyric, index, current_line);
 }
 
 //----------------播放器----------------
@@ -191,15 +208,14 @@ EM_ERR player_pause(MusicPlayer *player)
 	return EM_ERR_OK;
 }
 
+//停止
 EM_ERR player_stop(MusicPlayer *player)
 {
-
+	last_error = mciSendCommandA(player->device_id, MCI_STOP, 0, (DWORD_PTR)NULL);
+	return EM_ERR_OK;
 }
 
 //相对于当前位置前进/后退。
-//参数：
-//	player - MusicPlayer 结构体指针
-//	relative_sec - 相对移动的秒数。正数表示前进，负数表示后退。
 EM_ERR player_seek_relative(MusicPlayer *player, double relative_sec)
 {
 	double pos;
@@ -211,9 +227,6 @@ EM_ERR player_seek_relative(MusicPlayer *player, double relative_sec)
 }
 
 //设置播放位置到指定时间。
-//参数：
-//	player - MusicPlayer 结构体指针
-//	position_sec - 要移动到的位置，单位为秒。
 EM_ERR player_seek(MusicPlayer *player, double position_sec) 
 {
 	MCI_SEEK_PARMS mciSeekParms;
@@ -283,7 +296,7 @@ EM_ERR player_position_get(MusicPlayer *player, double *seconds)
 }
 
 //获取当前播放的位置。简化版
-inline double player_position_get_(MusicPlayer *player)
+double player_position_get_(MusicPlayer *player)
 {
 	double ret = 0;
 	player_position_get(player, &ret);
@@ -291,7 +304,7 @@ inline double player_position_get_(MusicPlayer *player)
 }
 
 //
-inline bool player_status_playing_(MusicPlayer *player)
+bool player_status_playing_(MusicPlayer *player)
 {
 	PLAYER_STATUS status = PLAYER_STATUS_UNKNOWN;
 	player_status(player, &status);
