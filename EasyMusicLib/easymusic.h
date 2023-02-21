@@ -1,13 +1,8 @@
 #pragma comment(lib, "WinMM.Lib")
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include <windows.h>
 #include <mmsystem.h>
 #include <mmreg.h>
+#include <stdbool.h>
 
 //------------结构体定义------------
 //播放器

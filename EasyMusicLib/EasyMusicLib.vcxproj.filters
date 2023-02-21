@@ -13,25 +13,13 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="源文件\MusicPlayer">
-      <UniqueIdentifier>{4c95a505-7fe7-4a93-ad41-9ea8a52a3ec6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="easymusic.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="main.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="examples.c">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MusicPlayer\player.c">
-      <Filter>源文件\MusicPlayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

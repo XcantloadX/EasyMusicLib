@@ -171,7 +171,7 @@ int hello_lyric()
 	return 0;
 }
 
-int main_()
+int main()
 {
 	while (true)
 	{
