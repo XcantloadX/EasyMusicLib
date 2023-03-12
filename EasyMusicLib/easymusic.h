@@ -4,6 +4,9 @@
 #include <mmreg.h>
 #include <stdbool.h>
 
+#ifndef PLAYER_DEF
+#define PLAYER_DEF
+
 //------------结构体定义------------
 //播放器
 typedef struct _player
@@ -74,6 +77,14 @@ void em_format_time(double sec, char *output);
 //	返回值：
 //		Lyric 变量
 Lyric *lyric_create_from_string(const char *str);
+Lyric * lyric_create_from_file(const char * file_path);
+//获取指定行的歌词
+//	参数：
+//		lyric - Lyric 结构体指针
+//		index - 歌词行数索引
+//		current_line - 用于存储获取到的歌词行的字符串指针
+//	返回值：
+//		EM_ERR 枚举类型，表示操作是否成功
 EM_ERR lyric_get(Lyric * lyric, int index, char ** current_line);
 EM_ERR lyric_update_index(Lyric * lyric, double position, int * current_line_index);
 //更新歌词，传入当前时间，返回当前应该显示的歌词
@@ -98,6 +109,13 @@ MusicPlayer *player_create();
 //	返回值：
 //		错误码，即 EM_ERR_ 开头的常量。
 EM_ERR player_open(MusicPlayer *player, const char *file_path);
+
+//关闭当前文件。
+//	参数：
+//		player -> MusicPlayer 结构体的指针
+//	返回值：
+//		错误码，即 EM_ERR_ 开头的常量。
+EM_ERR player_close(MusicPlayer * player);
 
 //播放。
 //	参数：
@@ -168,3 +186,6 @@ double player_position_get_(MusicPlayer *player);
 //	返回值：
 //		当前播放器是否正在播放。
 bool player_status_playing_(MusicPlayer *player);
+
+
+#endif // !PLAYER_DEF

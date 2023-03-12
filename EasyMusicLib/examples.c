@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "easymusic.h"
 
-#define EXAMPLE_MP3_FILE "D:\\三无MarBlue - 权御天下（Cover 洛天依）.mp3"
+#define EXAMPLE_MP3_FILE "D:\\Music\\三无MarBlue - 权御天下（Cover 洛天依）.mp3"
 #define EXAMPLE_NETWORK_FILE "http://music.163.com/song/media/outer/url?id=1826139261.mp3"
 
 //最简单的例子
